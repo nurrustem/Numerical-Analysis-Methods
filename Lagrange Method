@@ -1,0 +1,33 @@
+using Plots
+
+function lagrange_interp(x_vals, y_vals, x)
+    n = length(x_vals)
+    y = 0.0
+    for i = 1:n
+        p = 1.0
+        for j = 1:n
+            if j != i
+                p *= (x - x_vals[j])/(x_vals[i] - x_vals[j])
+            end
+        end
+        y += y_vals[i]*p
+    end
+    return y
+end
+
+# test data
+x_vals = [1.0, 2.0, 4.0, 7.0]
+y_vals = [0.0, 1.0, 3.0, 2.0]
+x = 2.5
+
+using Plots
+gr()
+
+# plot original data points and x value
+scatter(x_vals, y_vals, label="Data")
+scatter!([x], [lagrange_interp(x_vals, y_vals, x)], label="x", markersize=5)
+
+# evaluate and plot interpolating polynomial
+x_range = minimum(x_vals):0.01:maximum(x_vals)
+y_range = [lagrange_interp(x_vals, y_vals, x) for x in x_range]
+display(plot!(x_range, y_range, label="Interpolating Polynomial", xlabel="x", ylabel="y"))
